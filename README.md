@@ -1,6 +1,6 @@
 # STM32 L152 Discovery LCD example
 
-This example microcontroller flash program displays `*HELLO` string on LCD screen of STM32 L152 Discovery board.
+This example microcontroller flash program displays infinitely scrolling text on LCD screen of STM32 L152 Discovery board.
 
 ## Requirements
 

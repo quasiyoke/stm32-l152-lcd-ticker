@@ -189,13 +189,17 @@ static void lcd_show(char* text, int offset)
 
 int main(void)
 {
+    const int TEXT_LENGTH = strlen(TEXT);
+
     lcd_init();
 
-    lcd_show(TEXT, 0);
+    for (int offset=0; ; ++offset, offset%=TEXT_LENGTH) {
+        lcd_show(TEXT, offset);
 
-    // Wait a bit
-    for (int i=0; i<1000000; ++i) {
-        __asm__("nop");
+        // Wait a bit
+        for (int i=0; i<100000; ++i) {
+            __asm__("nop");
+        }
     }
 
     return 0;
