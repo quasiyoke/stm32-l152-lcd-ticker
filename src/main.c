@@ -9,6 +9,8 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/l1/lcd.h>
+#include <string.h>
+#include "main.h"
 
 static void lcd_init(void)
 {
@@ -165,25 +167,31 @@ static void write_char_to_lcd_ram(int position, uint8_t symbol, bool clear_befor
     write_mask_to_lcd_ram(position, from_ascii[symbol], clear_before);
 }
 
-static void lcd_display_hello (void)
+/**
+ * Shows maximal possible part of the given text on LCD screen. If text is too
+ * short, shows it cycled.
+ * @param {char*} text Text to show
+ * @param {int} offset Positive offset inside the text from which we should
+ *  start showing it.
+ */
+static void lcd_show(char* text, int offset)
 {
-    do {} while (!lcd_is_for_update_ready ());
+    const int TEXT_LENGTH = strlen(text);
 
-    write_char_to_lcd_ram(0, '*', true);
-    write_char_to_lcd_ram(1, 'H', true);
-    write_char_to_lcd_ram(2, 'E', true);
-    write_char_to_lcd_ram(3, 'L', true);
-    write_char_to_lcd_ram(4, 'L', true);
-    write_char_to_lcd_ram(5, 'O', true);
+    do {} while (!lcd_is_for_update_ready());
 
-    lcd_update ();
+    for (int i=0; i<LCD_LETTERS_COUNT; ++i) {
+        write_char_to_lcd_ram(i, text[(offset + i) % TEXT_LENGTH], true);
+    }
+
+    lcd_update();
 }
 
 int main(void)
 {
     lcd_init();
 
-    lcd_display_hello();
+    lcd_show(TEXT, 0);
 
     // Wait a bit
     for (int i=0; i<1000000; ++i) {
